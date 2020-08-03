@@ -1,5 +1,4 @@
 
-let display;
 updateDisplay();
 
 function add(num1,num2){
@@ -26,7 +25,7 @@ function operate(operator,num1,num2){
 function updateDisplay(){
     let dispStore = "";
     let result;
-    display = document.querySelector('#display-text');
+    let display = document.querySelector('#display-text');
     display.textContent = dispStore;
     let operatorUsed;
     let num1;
@@ -45,12 +44,7 @@ function updateDisplay(){
             num2 += (button.textContent);
             display.textContent = dispStore;
 
-           
-
-            if (result && num1) {
-                num1 = result;
-            }
-
+            //debugging: 
             console.log("num1: " + num1);
             console.log("num2: " + num2);
         });
@@ -65,15 +59,17 @@ function updateDisplay(){
         operatorBut.addEventListener('click',()=>{
             
             
-            operatorUsed = operatorBut.textContent;
+            
 
             if (num1==undefined) {num1 = dispStore;}
             else num1 = getOperate(operatorUsed,num1,num2);
+            
+            operatorUsed = operatorBut.textContent;
             num2 = "";
 
             dispStore += operatorUsed;
             display.textContent = dispStore;
-
+            
         });
     
     //for all other important buttons:
@@ -83,6 +79,8 @@ function updateDisplay(){
         //gets the result that we nee
         result = getOperate(operatorUsed,num1,num2)
         display.textContent = result;
+        
+
     });
 
 
