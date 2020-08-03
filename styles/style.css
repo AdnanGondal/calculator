@@ -53,6 +53,11 @@ button:hover{
     color: white;
 }
 
+#equal-but{
+    background-color: orange;
+    color: white;
+}
+
 .digits{
     background-color: gray;
     color: white;
