@@ -40,13 +40,13 @@ function getOperate(operatorUsed,num1,num2){
 function updateDisplay(){
     let dispStore = ""; //string to store what is displayed to user. 
     let result; 
-    let display = document.querySelector('#display-text');
-    display.textContent = "";
     let operatorUsed;
     let num1;
     let num2;
     //num1 holds the entire previous calculations done
     // num2 holds the final number entered by the user. 
+
+    //DOM elements: 
 
     const buttons = document.querySelectorAll('.digits');
     const operationButs = document.querySelectorAll('.operations');
@@ -54,7 +54,18 @@ function updateDisplay(){
     const equalBut = document.querySelector('#equal-but');
     const decimalBut = document.querySelector('#point-but');
     const backSpaceBut = document.querySelector('#backspace-but');
+    let display = document.querySelector('#display-text');
+    display.textContent = "";
 
+    //For keyboard input: use of .click
+    document.onkeypress = function (e){
+        
+        document.querySelectorAll('button').forEach((button)=>{
+            if (e.keyCode == button.textContent.charCodeAt(0)){
+                button.click();
+            }
+        });
+    }
     //For all the digit buttons: 
     buttons.forEach((button) => {
 
@@ -94,7 +105,7 @@ function updateDisplay(){
     
     equalBut.addEventListener('click',()=>{
         
-       if (num1 == undefined) {
+       if (num1 == undefined || operatorUsed == undefined) {
             result = dispStore;
        } //ensures first equal doesnt return NaN or other error. 
 
@@ -124,8 +135,9 @@ function updateDisplay(){
     backSpaceBut.addEventListener('click',()=>{
         dispStore = dispStore.slice(0,-1);
         
+        if (result != undefined) num1 = result;
         if (num2 != undefined) num2 = num2.slice(0,-1);
-        if (operatorUsed != undefined) operatorUsed = undefined;
+        else if (operatorUsed != undefined) operatorUsed = undefined;
         display.textContent = dispStore;
     });
 
