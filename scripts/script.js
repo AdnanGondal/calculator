@@ -22,21 +22,40 @@ function operate(operator,num1,num2){
     return operator(num1,num2);
 }
 
+function getOperate(operatorUsed,num1,num2){
+    switch(operatorUsed){
+        case 'x':
+            return operate(multiply,num1,num2);
+        case '+':
+            return operate(add,num1,num2);
+        case '÷':
+            return operate(divide,num1,num2);
+        case '-':
+            return operate(subtract,num1,num2);
+    }
+
+}
+
+
 function updateDisplay(){
-    let dispStore = "";
-    let result;
+    let dispStore = ""; //string to store what is displayed to user. 
+    let result; 
     let display = document.querySelector('#display-text');
-    display.textContent = dispStore;
+    display.textContent = "";
     let operatorUsed;
     let num1;
     let num2;
+    //num1 holds the entire previous calculations done
+    // num2 holds the final number entered by the user. 
 
     const buttons = document.querySelectorAll('.digits');
     const operationButs = document.querySelectorAll('.operations');
     const clearBut = document.querySelector('#clear-but');
     const equalBut = document.querySelector('#equal-but');
+    const decimalBut = document.querySelector('#point-but');
+    const backSpaceBut = document.querySelector('#backspace-but');
 
-    //makes all the buttons add to the display their own text content. 
+    //For all the digit buttons: 
     buttons.forEach((button) => {
 
         button.addEventListener('click',()=>{
@@ -49,21 +68,18 @@ function updateDisplay(){
             console.log("num2: " + num2);
         });
     
-    
-    
     });
 
-    //adds operators to the screen: 
+    //For the operators: 
     operationButs.forEach((operatorBut)=>{
     
         operatorBut.addEventListener('click',()=>{
-            
-            
-            
-
+            decimalBut.disabled = false;
             if (num1==undefined) {num1 = dispStore;}
-            else num1 = getOperate(operatorUsed,num1,num2);
+            else if(operatorUsed!=undefined) num1 = getOperate(operatorUsed,num1,num2);
             
+            //ie we change the operator used only after it is called 
+            // for num1 or else I would get incorrect num1.
             operatorUsed = operatorBut.textContent;
             num2 = "";
 
@@ -72,18 +88,27 @@ function updateDisplay(){
             
         });
     
-    //for all other important buttons:
+    });
+    
+    //for all other important buttons: ---------
     
     equalBut.addEventListener('click',()=>{
         
-        //gets the result that we nee
-        result = getOperate(operatorUsed,num1,num2)
+       if (num1 == undefined) {
+            result = dispStore;
+       } //ensures first equal doesnt return NaN or other error. 
+
+        else result = getOperate(operatorUsed,num1,num2)
+        
+        //For results with long no of decimal places...
+        if ((result.toString().length) > 16){
+        result = result.toPrecision(15);
+        }
+
         display.textContent = result;
         
 
     });
-
-
 
     clearBut.addEventListener('click',()=>{
         num1 = undefined;
@@ -92,30 +117,20 @@ function updateDisplay(){
         display.textContent = dispStore;
     });
 
+    decimalBut.addEventListener('click',()=>{
+        decimalBut.disabled = true;
     });
 
-    function getOperate(operatorUsed,num1,num2){
-        switch(operatorUsed){
-            case 'X':
-                return operate(multiply,num1,num2);
-                break;
-            case '+':
-                return operate(add,num1,num2);
-                break;
-            case '÷':
-                return operate(divide,num1,num2);
-                break;
-            case '-':
-                return operate(subtract,num1,num2);
-                break;
-        }
+    backSpaceBut.addEventListener('click',()=>{
+        dispStore = dispStore.slice(0,-1);
+        
+        if (num2 != undefined) num2 = num2.slice(0,-1);
+        if (operatorUsed != undefined) operatorUsed = undefined;
+        display.textContent = dispStore;
+    });
 
-    }
-
-    
-
-
-
+  
 
 
 }
+
