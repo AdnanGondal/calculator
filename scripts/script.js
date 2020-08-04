@@ -36,6 +36,19 @@ function getOperate(operatorUsed,num1,num2){
 
 }
 
+function operateString(num){
+    let nos = num.split(/([-x÷+]+)/);
+    console.log(nos)
+    let res = nos[0];
+    for (let i=1;i<nos.length;i=i+2){
+        let ops = nos[i];
+        let no = nos[i+1];
+        res = getOperate(ops,res,no)
+    }
+    return res;
+
+}
+
 
 function updateDisplay(){
     let dispStore = ""; //string to store what is displayed to user. 
@@ -43,6 +56,7 @@ function updateDisplay(){
     let operatorUsed;
     let num1;
     let num2;
+    let num2clear=false;
     //num1 holds the entire previous calculations done
     // num2 holds the final number entered by the user. 
 
@@ -71,12 +85,12 @@ function updateDisplay(){
 
         button.addEventListener('click',()=>{
             dispStore += (button.textContent);
-            num2 += (button.textContent);
+            if (num2clear == false) num2 += (button.textContent);
+            else {num1 += button.textContent}
             display.textContent = dispStore;
 
             //debugging: 
-            console.log("num1: " + num1);
-            console.log("num2: " + num2);
+            console.log({num1,num2,operatorUsed});
         });
     
     });
@@ -85,10 +99,14 @@ function updateDisplay(){
     operationButs.forEach((operatorBut)=>{
     
         operatorBut.addEventListener('click',()=>{
+            num2clear = false;
             decimalBut.disabled = false;
             if (num1==undefined) {num1 = dispStore;}
+            else if (isNaN(num1)){
+                //alert("we are here");
+                num1 = operateString(num1);
+            }
             else if(operatorUsed!=undefined) num1 = getOperate(operatorUsed,num1,num2);
-            
             //ie we change the operator used only after it is called 
             // for num1 or else I would get incorrect num1.
             operatorUsed = operatorBut.textContent;
@@ -104,27 +122,31 @@ function updateDisplay(){
     //for all other important buttons: ---------
     
     equalBut.addEventListener('click',()=>{
+    
+    console.log(isNaN(num1));
+    
+    if (num1 == undefined || operatorUsed == undefined) {
+        result = dispStore;
+    } //ensures first equal doesnt return NaN or other error. 
+    else if (isNaN(num1)){
+    //console.log("here we are");
+    result = operateString(num1);
+    }
+    else result = getOperate(operatorUsed,num1,num2)
         
-       if (num1 == undefined || operatorUsed == undefined) {
-            result = dispStore;
-       } //ensures first equal doesnt return NaN or other error. 
-
-        else result = getOperate(operatorUsed,num1,num2)
-        
-        //For results with long no of decimal places...
-        if ((result.toString().length) > 16){
+    //For results with long no of decimal places...
+    if ((result.toString().length) > 16){
         result = result.toPrecision(15);
         }
 
-        display.textContent = result;
-        
-
+    display.textContent = result; 
     });
 
     clearBut.addEventListener('click',()=>{
         num1 = undefined;
         num2 = undefined;
         dispStore = "";
+        num2clear=false;
         display.textContent = dispStore;
     });
 
@@ -133,16 +155,23 @@ function updateDisplay(){
     });
 
     backSpaceBut.addEventListener('click',()=>{
-        dispStore = dispStore.slice(0,-1);
-        
-        if (result != undefined) num1 = result;
+        removed = dispStore.slice(0,-1)
+        dispStore = removed;
+        if (dispStore == "") num1 = undefined;
+       
+        if (num2 == "") {
+            num1 = dispStore;
+            num2clear = true;
+        }
         if (num2 != undefined) num2 = num2.slice(0,-1);
-        else if (operatorUsed != undefined) operatorUsed = undefined;
+       
+        
+        //else if (operatorUsed != undefined) operatorUsed = undefined;
+        
+        console.log({num1,num2,operatorUsed});
+        
         display.textContent = dispStore;
     });
-
-  
-
 
 }
 
