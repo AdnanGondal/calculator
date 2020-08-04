@@ -78,6 +78,12 @@ function updateDisplay(){
             if (e.keyCode == button.textContent.charCodeAt(0)){
                 button.click();
             }
+            else if (e.keyCode == 13){
+                equalBut.click();
+            }
+            else if (e.keyCode == 8){
+                backSpaceBut.click();
+            }
         });
     }
     //For all the digit buttons: 
@@ -138,6 +144,11 @@ function updateDisplay(){
     if ((result.toString().length) > 16){
         result = result.toPrecision(15);
         }
+    // need to add below line as some smaller numbers were 
+    //being put outside the calculator.
+    if ((result.toString().length)>16){ 
+        result = Number(result).toExponential(12)
+    }
 
     display.textContent = result; 
     });
